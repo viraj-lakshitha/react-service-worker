@@ -4,9 +4,21 @@ orbs:
   heroku: circleci/heroku@0.0.10
 
 workflows:
-  heroku_deploy:
+  deployment:
     jobs:
+      - cleanup
       - heroku/deploy-via-git:
+          requires:
+            - cleanup
           filters:
             branches:
               only: develop
+
+jobs:
+  cleanup:
+    docker:
+      - image: vitiya99/react-base:1.0.0
+    steps:
+      - run:
+          name: Remove yarn.lock
+          command: rm -rf yarn.lock
